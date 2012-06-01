@@ -199,8 +199,11 @@ abstract class HttpRequest {
 			}
 			
 			if(!$this->config->getFireAndForget()) {
-				while(!feof($socket)) {
-					$response .= fgets($socket, 512);
+				while (($buffer = fgets($socket, 512)) !== false) {
+					$response .= $buffer;
+				}
+				if (!feof($socket)) {
+					$response .= "\nError: unexpected fgets() fail\n";
 				}
 			}
 			
